@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
@@ -15,11 +16,18 @@ public class PlayerMovement : MonoBehaviour {
     [SerializeField] private float speedY;
     [SerializeField] private float slidingFactor;
 
-    private Vector2 targetVector; // this is the final calculated value for desired direction and speed
+    private AlyaAnimations animations;
+
+    // flags
+    bool hasBraked; // this is to help with animation
+    
+
+    private Vector2 targetVector; // This is the final calculated value for desired direction and speed
 
     // Start is called before the first frame update
     void Start() {
-        
+        animations = FindObjectOfType<AlyaAnimations>();
+        if (animations == null) Debug.LogError("AlyaAnimations component not found.");
     }
 
     // Update is called once per frame
@@ -31,6 +39,33 @@ public class PlayerMovement : MonoBehaviour {
         Move();
     }
 
+    // Params: takes in the X input and Y input 
+    // Does all of the animation work related to Alya's movement
+    void processAnimations(float inputX, float inputY) {
+        Boolean inputDetected = Math.Abs(inputX) > 0f || Math.Abs(inputY) > 0f;
+
+        if (inputDetected) {
+            animations.setRun(true);
+            animations.setBrake(false);
+            animations.setIdle(false);
+
+            hasBraked = false;
+        } else {
+            if (!hasBraked) {
+                animations.setRun(false);
+                animations.setBrake(true);
+                animations.setIdle(false);
+
+                hasBraked = true;
+            } else {
+                animations.setRun(false);
+                animations.setBrake(false);
+                animations.setIdle(true);
+            }
+        }
+    }
+
+    // Detects inputs and executes functions
     void ProcessInputs() {
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
@@ -42,14 +77,9 @@ public class PlayerMovement : MonoBehaviour {
         } else if (x < 0) {
             Flip(false);
         } 
-        
-        // // Animations
-        // AlyaMovementAnimations animator = FindObjectOfType<AlyaMovementAnimations>();
-        // if (Math.Abs(x) <= 0.15f) {
-        //     animator.setBrake(true);
-        // } else {
-        //     animator.setBrake(false);
-        // }
+
+        // Processes animations at the end; after inputs are given
+        processAnimations(x, y);
     }
 
     void Move() {
@@ -64,5 +94,4 @@ public class PlayerMovement : MonoBehaviour {
             transform.localScale = localScale;
         }
     }
-
 }
