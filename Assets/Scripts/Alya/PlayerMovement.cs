@@ -32,11 +32,13 @@ public class PlayerMovement : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        ProcessInputs();
+        // ProcessInputs();
+        // we do this in the state machine now 
     }
 
     void FixedUpdate() {
-        Move();
+        // Move();
+        // we do this in the state machine now 
     }
 
     // Params: takes in the X input and Y input 
@@ -66,7 +68,7 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     // Detects inputs and executes functions
-    void ProcessInputs() {
+    public void ProcessInputs() {
         float x = Input.GetAxisRaw("Horizontal");
         float y = Input.GetAxisRaw("Vertical");
 
@@ -82,7 +84,7 @@ public class PlayerMovement : MonoBehaviour {
         processAnimations(x, y);
     }
 
-    void Move() {
+    public void HandleMovement() {
         Vector2 targetVelocity = new Vector2(targetVector.x * speedX, targetVector.y * speedY);
         rb.velocity = Vector2.Lerp(rb.velocity, targetVelocity, slidingFactor);
     }
