@@ -15,13 +15,12 @@ public class PlayerMovement : MonoBehaviour {
     [SerializeField] private float speedX;
     [SerializeField] private float speedY;
     [SerializeField] private float slidingFactor;
-
     private AlyaAnimations animations;
+    private float cameraSlideFactor = 1.15f;
 
     // flags
     bool hasBraked; // this is to help with animation
     
-
     private Vector2 targetVector; // This is the final calculated value for desired direction and speed
 
     // Start is called before the first frame update
@@ -82,6 +81,12 @@ public class PlayerMovement : MonoBehaviour {
 
         // Processes animations at the end; after inputs are given
         processAnimations(x, y);
+    }
+
+    public void halt() {
+        this.rb.velocity = this.rb.velocity / cameraSlideFactor;
+        Debug.Log(this.rb.velocity);
+        this.rb.angularVelocity = 0f;
     }
 
     public void HandleMovement() {

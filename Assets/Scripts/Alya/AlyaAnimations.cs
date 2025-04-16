@@ -23,4 +23,8 @@ public class AlyaAnimations : MonoBehaviour {
     public void setIdle(Boolean isIdle) {
         animator.SetBool("Idle", isIdle);
     }
+
+    public void setSnap(Boolean isSnapping) {
+        animator.SetBool("Snap", isSnapping);
+    }
 }

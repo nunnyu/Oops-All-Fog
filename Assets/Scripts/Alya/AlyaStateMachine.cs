@@ -19,6 +19,12 @@ public class AlyaStateMachine : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        Debug.Log(currentState);
+        if (alyaPicture.isActive()) {
+            currentState = PlayerState.TakingPicture;
+        } else {
+            currentState = PlayerState.Moving;
+        }
         HandleState();
     }
 
@@ -31,13 +37,15 @@ public class AlyaStateMachine : MonoBehaviour {
                 break;
 
             case PlayerState.TakingPicture:
-                break;
+                break; // nothing happens because we don't want to be able to move during this state  
         }
     }
 
     void FixedUpdate() {
         if (currentState == PlayerState.Moving) {
             playerMovement.HandleMovement(); 
+        } else {
+            playerMovement.halt();
         }
     }
 }
